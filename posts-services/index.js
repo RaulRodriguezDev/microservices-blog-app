@@ -1,11 +1,13 @@
 import express from 'express'
 import { randomBytes } from 'crypto'
+import cors from 'cors'
 
 const app = express()
 
 const posts = {}
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/posts', (req, res) => {
     res.send(posts)
