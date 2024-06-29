@@ -4,16 +4,17 @@ import AppContext from "../../context/AppContext"
 import PostListEmptyDashboard from "./PostListEmptyDashboard"
 
 const PostListDashboard = () => {
-    const { postsSaved } = useContext(AppContext)
+    const { postsSaved, commentCreated } = useContext(AppContext)
     const [postCards, setPostCards] = useState([])
 
     useEffect(() => {
+        const posts = Object.values(postsSaved)
+        const updatedPostCards = posts.map(post => {
+            return <PostCard key={post.id} post={post}/>
+        })
+        setPostCards(updatedPostCards)
         
-        const updatedPostCards = [] 
-        postsSaved.forEach( (post) => { updatedPostCards.push(<PostCard key={post.id} post={post}/>)})
-        setPostCards(updatedPostCards);
-        
-    }, [ postsSaved]);
+    }, [ postsSaved, commentCreated ]);
 
     return (
         <main className="flex flex-wrap">

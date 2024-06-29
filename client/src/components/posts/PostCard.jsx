@@ -2,20 +2,18 @@ import { Card, CardContent, CardDescription, Feed } from "semantic-ui-react"
 import propTypes from 'prop-types'
 import Comment from "../comments/Comment"
 import NewComment from "../comments/NewComment"
-import { useContext, useEffect, useState } from "react"
-import AppContext from "../../context/AppContext"
+import { useEffect, useState } from "react"
 
 const PostCard = ({ post }) => {
-    const { commentsSaved } = useContext(AppContext)
-    const {title, id } = post
+    const {id, title, comments } = post
     const [commentsList, setCommentsList] = useState([])
 
     useEffect(() => {
         const updatedCommentsList = []
-        if(commentsSaved[id])
-            commentsSaved[id].forEach((comment) => updatedCommentsList.push(<Comment key={comment.id} content={comment.content}/>))
+        if(comments.length != 0)
+            comments.forEach((comment) => updatedCommentsList.push(<Comment key={comment.id} content={comment.content}/>))
         setCommentsList(updatedCommentsList)
-    },[commentsSaved,id])
+    },[comments])
 
     return(
         <div className=" m-3">
