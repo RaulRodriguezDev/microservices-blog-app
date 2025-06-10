@@ -1,21 +1,24 @@
 import { Agent } from '../gateway/agent.js'
 
 const client = new Agent()
+const events = []
 
 const sendEvent = async (req, res) => {
     console.log('Received event:', req.body)
     const event = req.body
+    events.push(event)
 
-    await Promise.all([
-        client.sendEventToPostService(event),
-        client.sendEventToCommentsService(event),
-        client.sendEventToQueryService(event)
-    ])
-    .then(() => res.status(200).send('Event sent to all services'))
-    .catch(err => {
-        console.error(err)
-        res.status(500).send('Error sending event to services')
-    })
+    await client.sendEventToPostService(event)
+    await client.sendEventToCommentsService(event)
+    await client.sendEventToQueryService(event)
+    await client.sendEventToModerationService(event)
+
+    console.log(client.response)
+
 }
 
-export { sendEvent }
+const getEvents = (req, res) => {
+    res.status(200).json(events)
+}
+
+export { sendEvent, getEvents }

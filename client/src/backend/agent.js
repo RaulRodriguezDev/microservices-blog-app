@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { sleep } from '../helpers'
 import { toast } from 'react-toastify'
-import { Icon } from 'semantic-ui-react'
 
 const postClient = axios.create({
     baseURL: 'http://localhost:4000/posts',
@@ -24,18 +23,6 @@ const commentsClient = axios.create({
     }
 })
 
-commentsClient.interceptors.response.use(async response => {
-    await sleep(500)
-    toast.info('Comment created', {
-        icon: <Icon name='send'/>
-    })        
-    return Promise.resolve(response)
-}, async error => {
-    await sleep(500)
-    toast.error("Error creating comment")
-    return Promise.reject(error)
-})
-
 const queryClient = axios.create({
     baseURL: 'http://localhost:4002/posts'
 })
@@ -46,7 +33,7 @@ const posts = {
 
 const comments = {
     createComment: (content, postId) => commentsClient.post(`/${postId}/comments`,{ content })
-        .then(response => response.data),
+        .then(response => response.data)
 }
 
 const queryService = {

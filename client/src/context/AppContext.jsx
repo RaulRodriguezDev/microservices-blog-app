@@ -6,6 +6,7 @@ const AppContext = createContext()
 
 const AppProvider = ({children}) => {
     const [postsSaved, setPostsSaved] = useState([])
+    const [commentCreated, setCommentCreated] = useState("")
 
     const addPost = async (title) => {
         await posts.createPost(title)
@@ -15,13 +16,27 @@ const AppProvider = ({children}) => {
 
     const getPosts = async () => {
         const postsFetched = await queryService.getPosts()
+        console.log(postsFetched.data)
         setPostsSaved(postsFetched.data)
     }
 
     const createComment = async (comment, postId) => {
-        await comments.createComment(comment, postId)
-        const postsFetched = await queryService.getPosts()
-        setPostsSaved(postsFetched.data)
+        const newComment = await comments.createComment(comment, postId)
+
+        setPostsSaved(prevPosts => {
+            const updatedPosts = { ...prevPosts }
+            if (updatedPosts[postId]) {
+                updatedPosts[postId] = {
+                    ...updatedPosts[postId],
+                    comments: [
+                        ...updatedPosts[postId].comments,
+                        newComment 
+                    ]
+                }
+            }
+            return updatedPosts
+        })
+        setCommentCreated(comment)
     }
 
     useEffect(() => {
@@ -32,6 +47,7 @@ const AppProvider = ({children}) => {
         <AppContext.Provider
             value={{
                 postsSaved,
+                commentCreated,
                 addPost,
                 createComment,
             }}

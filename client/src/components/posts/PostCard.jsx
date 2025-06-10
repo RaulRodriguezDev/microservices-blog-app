@@ -11,7 +11,22 @@ const PostCard = ({ post }) => {
     useEffect(() => {
         const updatedCommentsList = []
         if(comments.length != 0)
-            comments.forEach((comment) => updatedCommentsList.push(<Comment key={comment.id} content={comment.content}/>))
+            comments.forEach((comment) => {
+                let content
+
+                switch (comment.status){
+                    case 'Pending':
+                        content = 'This comment is pending moderation'
+                        break;
+                    case 'Approved':
+                        content = comment.content
+                        break;
+                    case 'Rejected':
+                        content = 'This comment has been rejected'
+                        break;
+                }
+                updatedCommentsList.push(<Comment key={comment.id} content={content} status={comment.status}/>)
+            })
         setCommentsList(updatedCommentsList)
     },[comments])
 

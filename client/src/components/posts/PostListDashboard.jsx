@@ -4,7 +4,7 @@ import AppContext from "../../context/AppContext"
 import PostListEmptyDashboard from "./PostListEmptyDashboard"
 
 const PostListDashboard = () => {
-    const { postsSaved, commentCreated } = useContext(AppContext)
+    const { postsSaved } = useContext(AppContext)
     const [postCards, setPostCards] = useState([])
 
     useEffect(() => {
@@ -13,8 +13,8 @@ const PostListDashboard = () => {
             return <PostCard key={post.id} post={post}/>
         })
         setPostCards(updatedPostCards)
-        
-    }, [ postsSaved, commentCreated ]);
+
+    }, [ postsSaved ]);
 
     return (
         <main className="flex flex-wrap">

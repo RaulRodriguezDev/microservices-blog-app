@@ -1,8 +1,8 @@
 import express from 'express'
-import { sendEvent } from '../controllers/eventBusController.js'
+import { getEvents, sendEvent } from '../controllers/eventBusController.js'
 
 const router = express.Router()
 
 router.post('/events', sendEvent )
-
+router.get('/events', getEvents)
 export default router

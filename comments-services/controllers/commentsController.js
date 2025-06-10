@@ -14,27 +14,53 @@ const createComment = (req,res,next) => {
     const { content } = req.body
     const postId = req.params.id
 
-    req.body = { id: commentId, content, postId }
+    req.body.data = { id: commentId, content, postId, status: 'Pending' }
+    req.body.type = "CommentCreated"
     
     const comments = commentsByPostId[postId] || []
-    comments.push({ id: commentId, content })
+    comments.push({ id: commentId, content, status: req.body.data })
 
     commentsByPostId[postId] = comments
 
-    res.status(201).send('Comment created')
+    res.status(201).json({ id: commentId, content, status: req.body.data.status })
 
     next()
 }
 
-const sendCommentCreatedEvent = async (req,res) => {
+const sendEvent = async (req,res) => {
     
-    const data = req.body
-
+    const { type, data } = req.body
+    console.log(data)
     await eventBusClient.post('/',{
-        type: 'CommentCreated',
+        type,
         data
     
     })
 }
 
-export { getComments, createComment, sendCommentCreatedEvent }
+const handleEvent = (req, res, next) => {
+    const { type, data } = req.body
+    
+    console.log('Event received:', type)
+
+    if(type === 'CommentModerated'){
+        const { postId, id, status } = data
+        const comments = commentsByPostId[postId]
+
+        const comment = comments.find(comment => comment.id === id)
+
+        comment.status = status
+
+        req.body = { type: "CommentUpdated", data: {
+            postId,
+            id,
+            status,
+            content: data.content
+        }}
+
+        next()
+    }
+    
+    res.send({})
+}
+export { getComments, createComment, sendEvent, handleEvent }

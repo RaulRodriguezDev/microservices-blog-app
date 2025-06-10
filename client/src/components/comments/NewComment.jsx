@@ -1,7 +1,8 @@
-import { Button, Form, TextArea } from "semantic-ui-react"
+import { Button, Form, Icon, TextArea } from "semantic-ui-react"
 import propTypes from 'prop-types'
 import { useContext, useState } from "react"
 import AppContext from "../../context/AppContext"
+import { toast } from "react-toastify"
 
 const NewComment = ({ postId }) => {
     const [comment, setComment] = useState('')
@@ -13,10 +14,13 @@ const NewComment = ({ postId }) => {
 
             setLoading(true)
             await createComment(comment, postId)
+            toast.info('Comment created', {
+                icon: <Icon name='send' />
+            })
 
         }catch(error){
-
             console.log(error)
+            toast.error("Error creating comment")
 
         }finally{
             

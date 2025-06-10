@@ -34,6 +34,7 @@ const sendPostCreatedEvent = async (req, res) => {
         type: 'PostCreated',
         data,
     })
+    
 }
 
 export { getPosts, createPost, sendPostCreatedEvent }
